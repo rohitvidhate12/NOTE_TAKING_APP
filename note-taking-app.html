@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Note Taking App</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px;
+      }
+
+      #inputVal {
+        height: 30px;
+        width: 400px;
+      }
+
+      .card-container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .add-note {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: calc(45%);
+      }
+
+      .note-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 600px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .note-content {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .view-btn {
+        position: absolute;
+        bottom: 5px;
+        right: 60px;
+        cursor: pointer;
+        color: #007bff;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        max-width: 400px;
+        width: 100%;
+      }
+      .delete-btn {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: red;
+      }
+      .close-model {
+        cursor: pointer;
+        color: red;
+        font-weight: bold;
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <div class="input-box">
+        <h1>Note Taker</h1>
+        <p style="font-size: 20px; color: rgb(44, 169, 94)">Add A New Note</p>
+        <label>
+          Notes:
+          <input
+            type="text"
+            id="inputVal"
+            placeholder="Write your notes here"
+          />
+        </label>
+        <br />
+        <button class="add-note" onclick="addNote()">Add Note</button>
+      </div>
+
+      <div class="card-container" id="cardContainer"></div>
+
+      <div class="modal" id="myModal">
+        <div class="modal-content">
+          <span class="close-model" onclick="closeModal()">CLOSE</span>
+          <div id="modalContent"></div>
+        </div>
+      </div>
+    </section>
+    <script>
+      let notes = [];
+
+      const addNote = () => {
+        const inputVal = document.getElementById("inputVal");
+        const note = inputVal.value;
+
+        if (note !== "") {
+          notes.push(note);
+          inputVal.value = "";
+          displayNotes();
+        }
+      };
+
+      const displayNotes = () => {
+        const cardContainer = document.getElementById("cardContainer");
+        cardContainer.innerHTML = "";
+
+        notes.forEach((note, index) => {
+          const noteCard = document.createElement("div");
+          noteCard.className = "note-card";
+
+          const noteContent = document.createElement("div");
+          noteContent.className = "note-content";
+          noteContent.textContent = note;
+
+          const viewButton = document.createElement("button");
+          viewButton.className = "view-btn";
+          viewButton.textContent = "View";
+          viewButton.onclick = () => openModal(index);
+
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "delete-btn";
+          deleteButton.textContent = "DEL";
+          deleteButton.onclick = () => deleteNote(index);
+
+          noteCard.appendChild(noteContent);
+          noteCard.appendChild(viewButton);
+          noteCard.appendChild(deleteButton);
+          cardContainer.appendChild(noteCard);
+        });
+      };
+
+      const openModal = (index) => {
+        const modal = document.getElementById("myModal");
+        const modalContent = document.getElementById("modalContent");
+
+        modalContent.innerHTML = notes[index];
+
+        modal.style.display = "flex";
+      };
+
+      const closeModal = () => {
+        const modal = document.getElementById("myModal");
+        modal.style.display = "none";
+      };
+      const deleteNote = (index) => {
+        notes.splice(index, 1);
+        displayNotes();
+      };
+
+      window.onclick = (e) => {
+        const modal = document.getElementById("myModal");
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
